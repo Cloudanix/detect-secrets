@@ -108,14 +108,16 @@ class SecretsCollection:
         Adds branch to all secrets in this collection.
         """
         for file in self.data:
-            self.data[file]['branch'] = branch
+            for secret in self.data[file]:
+                secret.branch = branch
 
     def add_commit(self, commit: str) -> None:
         """
         Adds commit to all secrets in this collection.
         """
         for file in self.data:
-            self.data[file]['commit'] = commit
+            for secret in self.data[file]:
+                secret.commit = commit
 
     def combine(self, newer: 'SecretsCollection') -> None:
         """
