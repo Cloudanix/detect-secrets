@@ -119,13 +119,12 @@ class SecretsCollection:
             for secret in self.data[file]:
                 secret.commit = commit
 
-    def get_diff(self, newer: 'SecretsCollection') -> None:
+    def get_diff(self, newer: 'SecretsCollection') -> 'SecretsCollection':
         '''
         Returns a SecretsCollection containing only the newly added secrets
         '''
         nw = SecretsCollection()
         for file in newer.data:
-            # self.data[file] = newer.data[file]
             for secret in newer.data[file]:
                 if secret not in self.data[file]:
                     nw.data[file].add(secret)
