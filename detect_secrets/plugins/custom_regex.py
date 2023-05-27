@@ -11,17 +11,13 @@ class CustomRegex(RegexBasedDetector):
     def denylist(self) :
         deny = {}
         for pattern in self.patterns:
-            try:
-                deny[self.patterns[pattern]] = re.compile(self.patterns[pattern])
-            except:
-                print(pattern,self.patterns[pattern])
+            deny[self.patterns[pattern]] = re.compile(self.patterns[pattern])
         return deny
 
     def analyze_string(self, string: str):
         deny = self.denylist()
         for regex in deny:
             self.secret_type = self.patterns.inverse[regex]
-            # print(string)
             for match in deny[regex].findall(string): 
                 if isinstance(match, tuple):
                     for submatch in filter(bool, match):
