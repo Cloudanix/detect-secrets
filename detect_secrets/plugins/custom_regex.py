@@ -1,7 +1,7 @@
 import re
 from ..settings import get_settings
 from .base import RegexBasedDetector
-
+from ..constants import VerifiedResult
 
 
 class CustomRegex(RegexBasedDetector):
@@ -15,19 +15,24 @@ class CustomRegex(RegexBasedDetector):
         return deny
 
     def analyze_string(self, string: str):
-        index = 0
         deny = self.denylist()
         for regex in deny:
             self.secret_type = self.patterns.inverse[regex]
-            for match in deny[regex].findall(string):
+            for match in deny[regex].findall(string): 
                 if isinstance(match, tuple):
                     for submatch in filter(bool, match):
                         # It might make sense to paste break after yielding
                         yield submatch
                 else:
                     yield match
-    # denylist = [
-    #     re.compile(
-    #         r'([a-zA-Z0-9+/]{40})',
-    #     ),
-    # ]
+    
+    def verify(self,secret: str) -> VerifiedResult:
+        '''
+        Calls matching verification function from config if present
+        '''
+        verifications = get_settings().verify
+        if self.secret_type in verifications.keys():
+            if verifications[self.secret_type](secret):
+                return VerifiedResult.VERIFIED_TRUE
+            return VerifiedResult.VERIFIED_FALSE
+        return VerifiedResult.UNVERIFIED
