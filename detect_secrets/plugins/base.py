@@ -67,9 +67,14 @@ class BasePlugin(metaclass=ABCMeta):
                         secret=match,
                         context=context,
                     )
-                    is_verified = True if verified_result == VerifiedResult.VERIFIED_TRUE else False
+                    if verified_result == VerifiedResult.VERIFIED_TRUE:
+                        is_verified = True
+                    elif verified_result == VerifiedResult.VERIFIED_FALSE:
+                        is_verified = False
+                    else:
+                        is_verified = None
                 except requests.exceptions.RequestException:
-                    is_verified = False
+                    is_verified = None
 
             output.add(
                 PotentialSecret(

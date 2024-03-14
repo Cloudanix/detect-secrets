@@ -29,6 +29,9 @@ class PotentialSecret:
         line_number: int = 0,
         is_secret: Optional[bool] = None,
         is_verified: bool = False,
+        notify: bool = False,
+        commit: str = None,
+        branch: str = None,
     ) -> None:
         """
         :param type: human-readable secret type, defined by the plugin
@@ -46,11 +49,13 @@ class PotentialSecret:
         self.set_secret(secret)
         self.is_secret = is_secret
         self.is_verified = is_verified
-
+        self.notify = notify
+        self.commit = commit
+        self.branch = branch
         # If two PotentialSecrets have the same values for these fields,
         # they are considered equal. Note that line numbers aren't included
         # in this, because line numbers are subject to change.
-        self.fields_to_compare = ['filename', 'secret_hash', 'type']
+        self.fields_to_compare = ['filename', 'secret_hash', 'type', 'line_number']
 
     def set_secret(self, secret: str) -> None:
         self.secret_hash: str = self.hash_secret(secret)
@@ -84,6 +89,9 @@ class PotentialSecret:
             'line_number',
             'is_secret',
             'is_verified',
+            'notify',
+            'branch',
+            'commit'
         }:
             if parameter in data:
                 kwargs[parameter] = data[parameter]
@@ -101,6 +109,9 @@ class PotentialSecret:
             'filename': self.filename,
             'hashed_secret': self.secret_hash,
             'is_verified': self.is_verified,
+            'notify': self.notify,
+            'commit': self.commit,
+            'branch': self.branch,
         }
 
         if hasattr(self, 'line_number') and self.line_number:
