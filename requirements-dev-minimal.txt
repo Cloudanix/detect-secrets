@@ -3,7 +3,7 @@ coverage
 # on python 3.6.0 (xenial)
 bidict==0.22.1
 coverage<5
-flake8==3.5.0
+flake8==7.1.1
 gibberish-detector>=0.1.1
 monotonic
 mypy
